@@ -1,0 +1,6 @@
+flet
+SpeechRecognition
+gTTS
+wikipedia
+pygame
+requests
