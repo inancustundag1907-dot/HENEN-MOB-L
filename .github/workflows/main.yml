@@ -31,11 +31,11 @@ jobs:
       - name: Gereksinimleri Yükle
         run: |
           pip install flet
-          pip install -r requirements.txt
+          pip install -r HENEN/requirements.txt
 
       - name: APK Oluştur
         run: |
-          flet build apk --project hen_app --no-ios-pod-install
+          flet build apk HENEN --no-ios-pod-install
 
       - name: APK Dosyasını Kaydet
         uses: actions/upload-artifact@v3
