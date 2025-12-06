@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Kodları Çek
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # v3 yerine v4 yaptık
 
       - name: Java Kurulumu
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4 # v3 yerine v4 yaptık
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -24,7 +24,7 @@ jobs:
           flutter-version: '3.19.0'
 
       - name: Python Kurulumu
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # v4 yerine v5 yaptık
         with:
           python-version: '3.10'
 
@@ -38,7 +38,7 @@ jobs:
           flet build apk --project hen_app --no-ios-pod-install
 
       - name: APK Dosyasını Kaydet
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # İŞTE ASIL DÜZELTME BURADA (v4)
         with:
           name: HENEN-APK
           path: build/app/outputs/flutter-apk/app-release.apk
