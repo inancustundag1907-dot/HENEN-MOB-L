@@ -14,15 +14,16 @@ import random
 
 def main(page: ft.Page):
     # --- AYARLAR ---
-    wikipedia.set_lang("tr")
-    page.title = "HENEN"
-    page.theme_mode = "dark"
-    page.window_width = 360   
-    page.window_height = 740  
-    # Telefondan girince otomatik tam ekran olsun
-    page.window_resizable = True 
-    page.padding = 0
-    page.bgcolor = "#0F172A" 
+    try:
+        wikipedia.set_lang("tr")
+        page.title = "HENEN"
+        page.theme_mode = "dark"
+        page.window_width = 360   
+        page.window_height = 740  
+        page.window_resizable = True 
+        page.padding = 0
+        page.bgcolor = "#0F172A" 
+    except: pass
 
     r = sr.Recognizer()
 
@@ -66,12 +67,13 @@ def main(page: ft.Page):
 
     durum_metni = ft.Text("Dokun ve konuş...", color="#94A3B8", size=14)
 
-    # --- Ses Çalma (Mobil Uyumlu) ---
+    # --- Ses Çalma ---
     def ses_cal(metin):
         def thread_ses():
             try:
-                # Mobilde dosya yolları farklıdır, basit isim yeterli
                 dosya_ismi = "yanit.mp3"
+                if os.path.exists(dosya_ismi): os.remove(dosya_ismi)
+                
                 tts = gTTS(text=metin, lang='tr')
                 tts.save(dosya_ismi)
                 
@@ -83,8 +85,6 @@ def main(page: ft.Page):
                     pygame.time.Clock().tick(10)
                 
                 pygame.mixer.quit()
-                try: os.remove(dosya_ismi)
-                except: pass
             except Exception as e: 
                 print(f"Ses Hatası: {e}")
         threading.Thread(target=thread_ses, daemon=True).start()
@@ -121,9 +121,8 @@ def main(page: ft.Page):
         elif "okul" in komut:
             mesaj_ekle(f"{kullanici_bilgisi['okul']} öğrencisisin.")
 
-        # 2. ARAMA (Mobil)
+        # 2. ARAMA
         elif "ara" in komut:
-            # Mobilde "tel:" linki telefon uygulamasını açar
             if "kudret" in komut: webbrowser.open("tel:05550000000")
             elif "baba" in komut: webbrowser.open("tel:05320000000")
             else: mesaj_ekle("Kimi arayacağımı tam anlamadım.")
@@ -131,9 +130,9 @@ def main(page: ft.Page):
         # 3. HARİTA
         elif "neredeyim" in komut or "konum" in komut:
             mesaj_ekle("Haritalar açılıyor...")
-            webbrowser.open("geo:0,0?q=") # Mobilde harita uygulamasını tetikler
+            webbrowser.open("geo:0,0?q=") 
 
-        # 4. WEB / YOUTUBE
+        # 4. WEB
         elif "youtube" in komut:
             mesaj_ekle("YouTube açılıyor...")
             webbrowser.open("https://youtube.com")
@@ -150,14 +149,13 @@ def main(page: ft.Page):
         elif "merhaba" in komut: mesaj_ekle("Merhaba İnanç!")
         elif "nasılsın" in komut: mesaj_ekle("Süperim!")
         elif "kapat" in komut: 
-            mesaj_ekle("Uygulamadan çıkılıyor...")
+            mesaj_ekle("Çıkılıyor...")
             time.sleep(1)
             page.window_close()
             
         else:
-            # Anlamazsa Wikipedia'ya sorsun
             try:
-                mesaj_ekle("Bunu araştırıyorum...")
+                mesaj_ekle("Araştırıyorum...")
                 aranan = komut.replace("kimdir","").replace("nedir","").strip()
                 ozet = wikipedia.summary(aranan, sentences=1)
                 mesaj_ekle(ozet)
@@ -186,8 +184,7 @@ def main(page: ft.Page):
         except sr.UnknownValueError:
             durum_metni.value = "Anlaşılamadı."
         except Exception as e:
-            # Telefondaki hata mesajını görmek için
-            print(e) 
+            print(e)
             durum_metni.value = "Hata."
         
         finally:
@@ -215,6 +212,6 @@ def main(page: ft.Page):
     bottom_bar = ft.Container(content=ft.Column([durum_metni, ft.Container(height=10), mic_border], horizontal_alignment="center"), padding=20, bgcolor="#0F172A")
 
     page.add(ft.Column([header, chat_container, bottom_bar], spacing=0, expand=True))
-    mesaj_ekle("HENEN Mobile Hazır! APK Yapabiliriz.")
+    mesaj_ekle("HENEN Mobile Hazır!")
 
 ft.app(target=main)
